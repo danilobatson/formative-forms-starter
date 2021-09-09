@@ -90,6 +90,10 @@ app.post('/create', csrfProtection, validateGuest, (req, res) => {
   }
 });
 
+app.get("/create-interesting", csrfProtection, (req, res) => {
+	res.render('interesting', {user:{}, csrfToken: req.csrfToken()})
+  })
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 module.exports = app;
