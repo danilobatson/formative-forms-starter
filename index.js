@@ -163,7 +163,7 @@ app.post(
 	csrfProtection,
 	validateIntersting,
 	(req, res) => {
-		const {
+		let {
 			firstName,
 			lastName,
 			email,
@@ -173,6 +173,8 @@ app.post(
 			favoriteBeatle,
 			iceCream,
 		} = req.body;
+
+
 		if (req.errors.length > 0) {
 			res.render('interesting', {
 				csrfToken: req.csrfToken(),
@@ -180,7 +182,11 @@ app.post(
 				errors: req.errors,
 			});
 		} else {
-      console.log('bye')
+			if (iceCream === 'on') {
+				iceCream = true;
+			} else {
+				iceCream = false;
+			}
 			const lastId = users[users.length - 1].id;
 			users.push({
 				id: lastId + 1,
