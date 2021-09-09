@@ -1,12 +1,13 @@
 extends layout
 
 block content
-  nav
+  header
     a(href = '/') Home Page
     a(href = '/create') Create
     a(href = '/create-interesting') Create Interesting
+  main
   h2 Existing Users
-    table
+    table.pure-table.pure-table-striped
       thead
         h2 Existing Users
         tr
@@ -28,3 +29,4 @@ block content
             td= user.age
             td= user.favoriteBeatle
             td= user.likesIceCream
+  footer
