@@ -6,8 +6,8 @@ const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 const csrfProtection = csrf({cookie: true});;
 
-app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(express.urlencoded({extended: false}));
 app.set("view engine", "pug");
 
 
@@ -47,7 +47,7 @@ const validateGuest = (req, res, next) => {
 	}
 
   if (!password) {
-		errors.push('The provided values for the password and password confirmation fields did not match.');
+		errors.push('Please provide a password.');
 	}
 
   if (password !== confirmedPassword) {
@@ -63,10 +63,11 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/create", csrfProtection, (req, res) => {
-  res.render('users', {csrfToken: req.csrfToken()})
+  res.render('users', {user:{}, csrfToken: req.csrfToken()})
 })
 
 app.post('/create', csrfProtection, validateGuest, (req, res) => {
+  const { firstName, lastName, email, password, confirmedPassword } = req.body;
   if (req.errors.length > 0) {
     res.render('users', {
 			csrfToken: req.csrfToken(),
@@ -74,7 +75,19 @@ app.post('/create', csrfProtection, validateGuest, (req, res) => {
 			errors: req.errors,
 		});
   }
-	res.render('users', { csrfToken: req.csrfToken() });
+	else {
+    const lastId = users[users.length-1].id
+    users.push({
+			id: lastId + 1,
+			firstName,
+			lastName,
+			email,
+			password,
+			confirmedPassword,
+		});
+    //res.redirect(status, url);
+    res.redirect('/')
+  }
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
