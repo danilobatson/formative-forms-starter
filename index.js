@@ -97,8 +97,8 @@ const validateIntersting = (req, res, next) => {
     'age is required'
     )
   }
-
-  if ((typeof age) !== 'number'){
+const regx =  /\d+/
+  if (!(regx.test(age))){
     errors.push(
       'age must be a valid age'
     )
@@ -110,19 +110,13 @@ const validateIntersting = (req, res, next) => {
     )
   }
 
-  if(!favoriteBeatle) {
-    errors.push(
-    'favoriteBeatle is required'
-    )
-  }
+  if (!favoriteBeatle) {
+		errors.push('favoriteBeatle is required');
+	}
 
   if (favoriteBeatle == 'Scooby-Doo') {
-    errors.push(
-    'favoriteBeatle must be a real Beatle member'
-    )
-  }
-
-
+		errors.push('favoriteBeatle must be a real Beatle member');
+	}
 
 	req.errors = errors;
 	next();
@@ -180,12 +174,13 @@ app.post(
 			iceCream,
 		} = req.body;
 		if (req.errors.length > 0) {
-			res.render('users', {
+			res.render('interesting', {
 				csrfToken: req.csrfToken(),
 				user: req.body,
 				errors: req.errors,
 			});
 		} else {
+      console.log('bye')
 			const lastId = users[users.length - 1].id;
 			users.push({
 				id: lastId + 1,
@@ -194,9 +189,9 @@ app.post(
 				email,
 				password,
 				confirmedPassword,
-        age,
-        favoriteBeatle,
-        iceCream
+				age,
+				favoriteBeatle,
+				iceCream,
 			});
 			//res.redirect(status, url);
 			res.redirect('/');
