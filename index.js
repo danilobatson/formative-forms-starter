@@ -30,7 +30,33 @@ const users = [
 //     confirmedPassword: 'Confirmed Password'
 //   },
 // ];
+const validateGuest = (req, res, next) => {
+	const { firstName, lastName, email, password, confirmedPassword } = req.body;
+	const errors = [];
 
+	if (!firstName) {
+		errors.push('Please provide a first name.');
+	}
+
+  if (!lastName) {
+		errors.push('Please provide a last name.');
+	}
+
+  if (!email) {
+		errors.push('Please provide an email.');
+	}
+
+  if (!password) {
+		errors.push('The provided values for the password and password confirmation fields did not match.');
+	}
+
+  if (password !== confirmedPassword) {
+		errors.push('The provided values for the password and password confirmation fields did not match.');
+	}
+
+	req.errors = errors;
+	next();
+};
 
 app.get("/", async (req, res) => {
   res.render('index', {users})
@@ -39,6 +65,17 @@ app.get("/", async (req, res) => {
 app.get("/create", csrfProtection, (req, res) => {
   res.render('users', {csrfToken: req.csrfToken()})
 })
+
+app.post('/create', csrfProtection, validateGuest, (req, res) => {
+  if (req.errors.length > 0) {
+    res.render('users', {
+			csrfToken: req.csrfToken(),
+			user: req.body,
+			errors: req.errors,
+		});
+  }
+	res.render('users', { csrfToken: req.csrfToken() });
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
